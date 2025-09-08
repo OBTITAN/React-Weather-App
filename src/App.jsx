@@ -9,7 +9,7 @@ function App() {
 
   return(
     <div>
-          <div class = 'bg-[hans-RdwLQlo5AYc-unsplash.jpg]'>
+          <div>
             <p class='font-extrabold text-left text-4xl mb-10'>Welcome</p>
           </div>
           <div class='bg-[#D3D3D3] mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
@@ -22,11 +22,16 @@ function App() {
               <div class=',mr-3 ml-auto'>
                 {weatherState == 'Cloudy'
                 ?(<img src='Cloudy.svg' alt='cloudy' class='h-[100px] w-[100px]'/>)
-                :(<p>no image at the time</p>)}
+                :weatherState == 'Sunny'
+                ?(<img src='Sunny.svg' alt='sunny' class='h-[100px] w-[100px]'/>)
+                :weatherState == 'Rainy'
+                ?(<img src='Rainy.svg' alt='rainy' class='h-[100px] w-[100px]'/>)
+                :(<img src='Cloudy.svg' alt='cloudy' class='h-[100px] w-[100px]'/>)
+                }
               </div>
             </div>
 
-            <div class='bg-[#D3D3D3] p-20 mb-5 rounded-4xl h-70 flex justify-around items-center space-x-3'>
+            <div class='bg-[#D3D3D3] p-20 mb-7 rounded-4xl h-70 flex justify-around items-center space-x-3'>
                  <WeatherDetails weatherMeasure = 'Wind' imagePath = 'fast-wind.svg' altImageTxt = 'Wind Image'/>
 
                  <WeatherDetails weatherMeasure = 'Humidity' imagePath = 'humidity.svg' altImageTxt = 'Humidity Image'/>
@@ -34,11 +39,17 @@ function App() {
                  <WeatherDetails weatherMeasure = 'Rain' imagePath = 'precepitation.svg' altImageTxt = 'Precipitation Image'/>
             </div>
 
-            <div class='md:flex  md:justify-around  min-md:grid-cols-2'>
-              <WeatherCard />
-              <WeatherCard />
-              <WeatherCard />
-              <WeatherCard />
+             <div class='flex justify-items-start mb-5 ml-12 space-x-20 text-left text-lg font-extrabold'>
+               <p>Today</p>
+               <p>Tomorrow</p>
+               <p>Next 3 Days</p>
+            </div>
+
+            <div class='min-sm:columns-1 min-sm:mx-auto md:flex md:justify-around '>
+              <WeatherCard weatherIcon='sun-cloud-icon.svg' iconAltText='sun and cloud icon' />
+              <WeatherCard weatherIcon='sun-cloud-fast-wind-icon.svg' iconAltText='sun and cloud with wind icon' />
+              <WeatherCard weatherIcon='cloud-angled-rain-zap-icon.svg' iconAltText='thumdercloud with rain icon' />
+              <WeatherCard weatherIcon='cloud-angled-zap-icon.svg' iconAltText='thundercloud icon' />
             </div>
 
 
