@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import WeatherDetails from './components/WeatherDetails'
+import WeatherCard from './components/WeatherCard';
 
 function App() {
   let currentDate = new Date().toLocaleDateString();
@@ -25,13 +26,19 @@ function App() {
               </div>
             </div>
 
-            <div class='bg-[#D3D3D3] p-20 rounded-4xl h-70 flex justify-around items-center space-x-3'>
+            <div class='bg-[#D3D3D3] p-20 mb-5 rounded-4xl h-70 flex justify-around items-center space-x-3'>
                  <WeatherDetails weatherMeasure = 'Wind' imagePath = 'fast-wind.svg' altImageTxt = 'Wind Image'/>
 
                  <WeatherDetails weatherMeasure = 'Humidity' imagePath = 'humidity.svg' altImageTxt = 'Humidity Image'/>
 
                  <WeatherDetails weatherMeasure = 'Rain' imagePath = 'precepitation.svg' altImageTxt = 'Precipitation Image'/>
+            </div>
 
+            <div class='md:flex  md:justify-around  min-md:grid-cols-2'>
+              <WeatherCard />
+              <WeatherCard />
+              <WeatherCard />
+              <WeatherCard />
             </div>
 
 
