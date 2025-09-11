@@ -25,9 +25,11 @@ function App() {
         const data = await response.json();
         console.log(data);
       }
+
     } catch (error) {
       setError('An error occurred while fetching weather data');
       console.log(error);
+      
     } finally {
       setIsLoading(false);
     }
