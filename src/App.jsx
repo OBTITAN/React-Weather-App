@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import WeatherDetails from './components/WeatherDetails'
 import WeatherCard from './components/WeatherCard';
+import Search from './components/Search';
+import Spinner from './components/Spinner';
 
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -10,8 +12,10 @@ const BASE_URL= `https://weather.visualcrossing.com/VisualCrossingWebServices/re
  
 function App() {
   const [weatherData, setWeatherData] = useState([]);
+  const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
 
   const fetchWeatherData = async (locationQuery) => {
       try {
@@ -23,21 +27,28 @@ function App() {
         console.log(response.status, response.statusText);
       } else {
         const data = await response.json();
+        setWeatherData(data);
         console.log(data);
+        setError('');
       }
 
     } catch (error) {
       setError('An error occurred while fetching weather data');
       console.log(error);
-      
+
     } finally {
       setIsLoading(false);
     }
 }
 
+
+
 useEffect(() =>{
-  fetchWeatherData('London');
-},[])
+  if(location){
+    fetchWeatherData(location);
+  }
+},[location])
+
 
   let currentDate = new Date().toLocaleDateString();
   const weatherState = 'Cloudy';
@@ -47,9 +58,18 @@ useEffect(() =>{
           <div>
             <p className='font-extrabold text-left text-4xl mb-10'>Welcome</p>
           </div>
+
+          <div className="mb-10">
+            <Search setSearchTerm={setLocation}/>
+          </div>
+
           <div className='bg-[#D3D3D3] mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
               <div className='text-white text-left ml-1 mr-auto'>
-                <p className='font-extrabold text-3xl'>Some city</p>
+                <div className='font-extrabold text-3xl'>
+                  {isLoading?
+                   (<Spinner />)
+                  :(<p>{weatherData.address}</p>)}
+                </div>
                 <p>{currentDate}</p>
                 <p className='font-bold'>{weatherState}</p>
                 <h1>API TEMP DATA</h1>
