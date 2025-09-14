@@ -15,6 +15,7 @@ function App() {
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const weatherInfo = "";
 
 
   const fetchWeatherData = async (locationQuery) => {
@@ -28,6 +29,7 @@ function App() {
       } else {
         const data = await response.json();
         setWeatherData(data);
+        weatherInfo = data.currentConditions;
         console.log(data);
         setError('');
       }
@@ -51,7 +53,6 @@ useEffect(() =>{
 
 
   let currentDate = new Date().toLocaleDateString();
-  const weatherState = 'Cloudy';
 
   return(
     <div>
@@ -64,25 +65,26 @@ useEffect(() =>{
           </div>
 
           <div className='bg-[#D3D3D3] mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
-              <div className='text-white text-left ml-1 mr-auto'>
+
+              {isLoading? (<Spinner />)
+              : error? (<p className='text-red-500 font-bold'>{error}</p>)
+              :(
+                <div className='text-white text-left ml-1 mr-auto'>
                 <div className='font-extrabold text-3xl'>
-                  {isLoading?
-                   (<Spinner />)
-                  :(<p>{weatherData.address}</p>)}
+                  {weatherData.resolvedAddress}
                 </div>
                 <p>{currentDate}</p>
-                <p className='font-bold'>{weatherState}</p>
-                <h1>API TEMP DATA</h1>
+                <p className='font-bold'>{weatherData.currentConditions?.conditions}</p>
+                <h1>{weatherData.currentConditions?.temp} °F</h1>
               </div>
+              
+              )
+
+              }
 
               <div className=',mr-3 ml-auto'>
-                {weatherState == 'Cloudy'
-                ?(<img src='Cloudy.svg' alt='cloudy' className='h-[100px] w-[100px]'/>)
-                :weatherState == 'Sunny'
-                ?(<img src='Sunny.svg' alt='sunny' className='h-[100px] w-[100px]'/>)
-                :weatherState == 'Rainy'
-                ?(<img src='Rainy.svg' alt='rainy' className='h-[100px] w-[100px]'/>)
-                :(<img src='Cloudy.svg' alt='cloudy' className='h-[100px] w-[100px]'/>)
+                {
+                  (<img src='Cloudy.svg' alt='cloudy' className='h-[100px] w-[100px]'/>)
                 }
               </div>
             </div>
