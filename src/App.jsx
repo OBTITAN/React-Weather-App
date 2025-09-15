@@ -62,36 +62,40 @@ useEffect(() =>{
             <Search setSearchTerm={setLocation}/>
           </div>
           {location == null
-          ? (<div className='text-center text-2xl font-bold'>Please enter a location to get the weather information</div>)
+          ? (<div className='text-center text-2xl font-bold text-white'>Please enter a location to get the weather information</div>)
           :
           (
           <div className='max-w-screen mx-auto'>
-          <div className='bg-[#D3D3D3] mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
+          <div className='bg-gray-700 mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
 
               {isLoading? (<Spinner />)
               : error? (<p className='text-red-500 font-bold'>{error}</p>)
               :(
-                <div className='text-white text-left ml-1 mr-auto'>
-                <div className='font-extrabold text-3xl'>
-                  {weatherData.resolvedAddress}
+                <div className='flex justify-between items-center w-full'>
+                  <div className='text-white text-left ml-1 mr-auto'>
+                  <div className='font-extrabold text-3xl'>
+                    {weatherData.resolvedAddress}
+                  </div>
+                  <p>{currentDate}</p>
+                  <p className='font-bold'>{weatherData.currentConditions?.conditions}</p>
+                  <h1>{weatherData.currentConditions?.temp} °F</h1>
                 </div>
-                <p>{currentDate}</p>
-                <p className='font-bold'>{weatherData.currentConditions?.conditions}</p>
-                <h1>{weatherData.currentConditions?.temp} °F</h1>
+
+                <div className=',mr-3 ml-auto'>
+                  {
+                    (<img src='Cloudy.svg' alt='cloudy' className='h-[100px] w-[100px]'/>)
+                  }
+                </div>
+
               </div>
               
               )
 
               }
 
-              <div className=',mr-3 ml-auto'>
-                {
-                  (<img src='Cloudy.svg' alt='cloudy' className='h-[100px] w-[100px]'/>)
-                }
-              </div>
             </div>
 
-            <div className='bg-[#D3D3D3] p-20 mb-7 rounded-4xl h-70 flex justify-around items-center space-x-3'>
+            <div className='bg-gray-700 p-20 mb-7 rounded-4xl h-70 flex justify-around items-center space-x-3'>
                  <WeatherDetails weatherMeasure = 'Wind' imagePath = 'fast-wind.svg' altImageTxt = 'Wind Image'/>
 
                  <WeatherDetails weatherMeasure = 'Humidity' imagePath = 'humidity.svg' altImageTxt = 'Humidity Image'/>
@@ -99,7 +103,7 @@ useEffect(() =>{
                  <WeatherDetails weatherMeasure = 'Rain' imagePath = 'precepitation.svg' altImageTxt = 'Precipitation Image'/>
             </div>
 
-             <div className='flex justify-items-start flex-wrap mb-5 ml-12 space-x-20 text-left text-lg font-extrabold'>
+             <div className='flex justify-items-start flex-wrap mb-5 ml-12 space-x-20 text-white text-left text-lg font-extrabold'>
                <p>Today</p>
                <p>Tomorrow</p>
                <p>Next 3 Days</p>
