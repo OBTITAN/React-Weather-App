@@ -15,7 +15,6 @@ function App() {
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const weatherInfo = "";
 
 
   const fetchWeatherData = async (locationQuery) => {
@@ -29,7 +28,6 @@ function App() {
       } else {
         const data = await response.json();
         setWeatherData(data);
-        weatherInfo = data.currentConditions;
         console.log(data);
         setError('');
       }
@@ -56,14 +54,18 @@ useEffect(() =>{
 
   return(
     <div>
-          <div>
-            <p className='font-extrabold text-left text-4xl mb-10'>Welcome</p>
+          <div className='text-white text-center mb-10'>
+            <p className='font-extrabold text-4xl'>Weather App</p>
           </div>
 
           <div className="mb-10">
             <Search setSearchTerm={setLocation}/>
           </div>
-
+          {location == null
+          ? (<div className='text-center text-2xl font-bold'>Please enter a location to get the weather information</div>)
+          :
+          (
+          <div className='max-w-screen mx-auto'>
           <div className='bg-[#D3D3D3] mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
 
               {isLoading? (<Spinner />)
@@ -109,9 +111,9 @@ useEffect(() =>{
               <WeatherCard weatherIcon='cloud-angled-rain-zap-icon.svg' iconAltText='thumdercloud with rain icon' />
               <WeatherCard weatherIcon='cloud-angled-zap-icon.svg' iconAltText='thundercloud icon' />
             </div>
+          </div>
 
-
-
+              )}
         </div>
   )
 }
