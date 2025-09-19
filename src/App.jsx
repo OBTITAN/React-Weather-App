@@ -41,6 +41,45 @@ function App() {
     }
 }
 
+const getWeatherIcon = (description) => {
+  if (!description) return '/sun-cloud-icon.svg';
+  
+  description = description.toLowerCase();
+  
+  switch (true) {
+    case description.includes('sunny') || description.includes('clear'):
+      return '/sun-icon.svg';
+      
+    case description.includes('rain') || description.includes('drizzle') || description.includes('shower'):
+      return '/cloud-angled-rain-zap-icon.svg';
+      
+    case description.includes('thunder') || description.includes('storm') || description.includes('lightning'):
+      return '/cloud-angled-zap-icon.svg';
+      
+    case description.includes('wind') || description.includes('gust') || description.includes('breezy'):
+      return '/sun-cloud-fast-wind-icon.svg';
+      
+    case description.includes('cloud') || description.includes('overcast'):
+      return '/sun-cloud-icon.svg';
+      
+    case description.includes('fog') || description.includes('mist'):
+      return '/cloud-fog-icon.svg';
+      
+    case description.includes('snow') || description.includes('sleet'):
+      return '/cloud-snow-icon.svg';
+      
+    default:
+      return '/sun-cloud-icon.svg';
+  }
+}
+
+// Then in your img tag's src attribute (around line 90):
+<img 
+  src={getWeatherIcon(weatherData.current?.weather_descriptions[0])}
+  alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
+  className='h-[100px] w-[100px]'
+/>
+
 
 
 useEffect(() =>{
@@ -84,19 +123,7 @@ useEffect(() =>{
 
                 <div className=',mr-3 ml-auto'>
                  <img 
-                    src={
-                      weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('sunny') 
-                        ? '/sun-icon.svg'
-                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('cloud') 
-                        ? '/sun-cloud-icon.svg'
-                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('rain') 
-                        ? '/cloud-angled-rain-zap-icon.svg'
-                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('thunder') 
-                        ? '/cloud-angled-zap-icon.svg'
-                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('wind') 
-                        ? '/sun-cloud-fast-wind-icon.svg'
-                        : '/sun-cloud-icon.svg' // default fallback icon
-                    }
+                    src={()=> getWeatherIcon(weatherData.current?.weather_descriptions[0])}
                     alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
                     className='h-[100px] w-[100px]'
                   />
@@ -115,11 +142,11 @@ useEffect(() =>{
               : error? (<p className='text-red-500 font-bold'>{error}</p>)
               :(
                 <div className='md:flex md:justify-around md:items-center md:space-y-0 md:w-full  '>
-                    <WeatherDetails weatherMeasure = 'Wind' data = {weatherData.current?.wind_speed} imagePath = 'fast-wind.svg' altImageTxt = 'Wind Image'/>
+                    <WeatherDetails weatherMeasure = 'Wind' data = {weatherData.current?.wind_speed} imagePath = 'Wind.svg' altImageTxt = 'Wind Image'/>
 
-                    <WeatherDetails weatherMeasure = 'Humidity' data = {weatherData.current?.humidity} imagePath = 'humidity.svg' altImageTxt = 'Humidity Image'/>
+                    <WeatherDetails weatherMeasure = 'Humidity' data = {weatherData.current?.humidity} imagePath = 'Drizzle.svg' altImageTxt = 'Humidity Image'/>
 
-                    <WeatherDetails weatherMeasure = 'Rain' data = {weatherData.current?.precip} imagePath = 'precepitation.svg' altImageTxt = 'Precipitation Image'/>
+                    <WeatherDetails weatherMeasure = 'Rain' data = {weatherData.current?.precip} imagePath = 'Rain.svg' altImageTxt = 'Precipitation Image'/>
                 </div>
               )
               }
@@ -132,10 +159,10 @@ useEffect(() =>{
             </div>
 
             <div className='flex justify-around flex-wrap'>
-              <WeatherCard weatherIcon='sun-cloud-icon.svg' iconAltText='sun and cloud icon' />
-              <WeatherCard weatherIcon='sun-cloud-fast-wind-icon.svg' iconAltText='sun and cloud with wind icon' />
-              <WeatherCard weatherIcon='cloud-angled-rain-zap-icon.svg' iconAltText='thumdercloud with rain icon' />
-              <WeatherCard weatherIcon='cloud-angled-zap-icon.svg' iconAltText='thundercloud icon' />
+              <WeatherCard weatherIcon='Cloudy-clear at times.svg' iconAltText='sun and cloud icon' />
+              <WeatherCard weatherIcon='Scattered-thunderstorm.svg' iconAltText='sun and cloud with wind icon' />
+              <WeatherCard weatherIcon='Rain-and-thunderstorm.svg' iconAltText='thundercloud with rain icon' />
+              <WeatherCard weatherIcon='Severe-thunderstorm.svg' iconAltText='thundercloud icon' />
             </div>
           </div>
 
