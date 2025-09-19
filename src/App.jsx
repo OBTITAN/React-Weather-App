@@ -7,7 +7,7 @@ import Spinner from './components/Spinner';
 
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-const BASE_URL= `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/`
+const BASE_URL= `http://api.weatherstack.com/current`
 
  
 function App() {
@@ -20,7 +20,7 @@ function App() {
   const fetchWeatherData = async (locationQuery) => {
       try {
           setIsLoading(true);
-          const response = await fetch(`${BASE_URL}${locationQuery}?unitGroup=us&key=${API_KEY}&contentType=json`);
+          const response = await fetch(`${BASE_URL}?access_key=${API_KEY}&query=${locationQuery}`);
  
       if (!response.ok) {
         setError('Could not fetch weather data');
@@ -66,25 +66,40 @@ useEffect(() =>{
           :
           (
           <div className='max-w-screen mx-auto'>
-          <div className='bg-gray-700 mb-5 p-10 rounded-4xl h-50 flex justify-center items-center space-x-3'>
 
+
+          <div className='bg-gray-700 mb-5 p-10 rounded-4xl h-100  md:h-50 flex justify-center items-center space-x-3'>
               {isLoading? (<Spinner />)
               : error? (<p className='text-red-500 font-bold'>{error}</p>)
               :(
                 <div className='flex justify-between items-center w-full'>
                   <div className='text-white text-left ml-1 mr-auto'>
                   <div className='font-extrabold text-3xl'>
-                    {weatherData.resolvedAddress}
+                    {weatherData.location?.name}, {weatherData.location?.country} 
                   </div>
                   <p>{currentDate}</p>
-                  <p className='font-bold'>{weatherData.currentConditions?.conditions}</p>
-                  <h1>{weatherData.currentConditions?.temp} °F</h1>
+                  <p className='font-bold'>{weatherData.current?.weather_descriptions[0]}</p>
+                  <h1>{weatherData.current?.temperature} °F</h1>
                 </div>
 
                 <div className=',mr-3 ml-auto'>
-                  {
-                    (<img src='Cloudy.svg' alt='cloudy' className='h-[100px] w-[100px]'/>)
-                  }
+                 <img 
+                    src={
+                      weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('sunny') 
+                        ? '/sun-icon.svg'
+                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('cloud') 
+                        ? '/sun-cloud-icon.svg'
+                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('rain') 
+                        ? '/cloud-angled-rain-zap-icon.svg'
+                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('thunder') 
+                        ? '/cloud-angled-zap-icon.svg'
+                        : weatherData.current?.weather_descriptions[0]?.toLowerCase().includes('wind') 
+                        ? '/sun-cloud-fast-wind-icon.svg'
+                        : '/sun-cloud-icon.svg' // default fallback icon
+                    }
+                    alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
+                    className='h-[100px] w-[100px]'
+                  />
                 </div>
 
               </div>
@@ -95,18 +110,25 @@ useEffect(() =>{
 
             </div>
 
-            <div className='bg-gray-700 p-20 mb-7 rounded-4xl h-70 flex justify-around items-center space-x-3'>
-                 <WeatherDetails weatherMeasure = 'Wind' imagePath = 'fast-wind.svg' altImageTxt = 'Wind Image'/>
+            <div className='bg-gray-700 p-20 mb-7 rounded-4xl h-160 md:h-70 flex justify-center items-center space-x-3'>
+              {isLoading? (<Spinner />)
+              : error? (<p className='text-red-500 font-bold'>{error}</p>)
+              :(
+                <div className='md:flex md:justify-around md:items-center md:space-y-0 md:w-full  '>
+                    <WeatherDetails weatherMeasure = 'Wind' data = {weatherData.current?.wind_speed} imagePath = 'fast-wind.svg' altImageTxt = 'Wind Image'/>
 
-                 <WeatherDetails weatherMeasure = 'Humidity' imagePath = 'humidity.svg' altImageTxt = 'Humidity Image'/>
+                    <WeatherDetails weatherMeasure = 'Humidity' data = {weatherData.current?.humidity} imagePath = 'humidity.svg' altImageTxt = 'Humidity Image'/>
 
-                 <WeatherDetails weatherMeasure = 'Rain' imagePath = 'precepitation.svg' altImageTxt = 'Precipitation Image'/>
+                    <WeatherDetails weatherMeasure = 'Rain' data = {weatherData.current?.precip} imagePath = 'precepitation.svg' altImageTxt = 'Precipitation Image'/>
+                </div>
+              )
+              }
             </div>
 
              <div className='flex justify-items-start flex-wrap mb-5 ml-12 space-x-20 text-white text-left text-lg font-extrabold'>
-               <p>Today</p>
-               <p>Tomorrow</p>
-               <p>Next 3 Days</p>
+               <p className='hover:text-blue-600'>Today</p>
+               <p className='hover:text-blue-600'>Tomorrow</p>
+               <p className='hover:text-blue-600'>Next 3 Days</p>
             </div>
 
             <div className='flex justify-around flex-wrap'>
@@ -118,6 +140,7 @@ useEffect(() =>{
           </div>
 
               )}
+
         </div>
   )
 }
