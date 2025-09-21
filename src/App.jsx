@@ -42,45 +42,32 @@ function App() {
 }
 
 const getWeatherIcon = (description) => {
-  if (!description) return '/sun-cloud-icon.svg';
+  if (!description) return 'Sunny.svg';
   
   description = description.toLowerCase();
   
-  switch (true) {
-    case description.includes('sunny') || description.includes('clear'):
-      return '/sun-icon.svg';
-      
-    case description.includes('rain') || description.includes('drizzle') || description.includes('shower'):
-      return '/cloud-angled-rain-zap-icon.svg';
-      
-    case description.includes('thunder') || description.includes('storm') || description.includes('lightning'):
-      return '/cloud-angled-zap-icon.svg';
-      
-    case description.includes('wind') || description.includes('gust') || description.includes('breezy'):
-      return '/sun-cloud-fast-wind-icon.svg';
-      
-    case description.includes('cloud') || description.includes('overcast'):
-      return '/sun-cloud-icon.svg';
-      
-    case description.includes('fog') || description.includes('mist'):
-      return '/cloud-fog-icon.svg';
-      
-    case description.includes('snow') || description.includes('sleet'):
-      return '/cloud-snow-icon.svg';
-      
-    default:
-      return '/sun-cloud-icon.svg';
+  if (description.includes('sunny') || description.includes('clear')) {
+    return 'Sunny.svg';
+  } else if (description.includes('rain') || description.includes('drizzle') || description.includes('shower')) {
+    return 'Rain.svg';
+  } else if (description.includes('thunder') || description.includes('storm') || description.includes('lightning')) {
+    return 'Scattered-thunderstorm.svg';
+  } else if (description.includes('wind') || description.includes('gust') || description.includes('breezy')) {
+    return 'Wind.svg';
+  } else if (description.includes('cloudy') || description.includes('overcast') || description.includes('cloud')) {
+    return 'Cloudy.svg';
+  } else if (description.includes('fog') || description.includes('mist')) {
+    return 'Fog.svg';
+  } else if (description.includes('snow')) {
+    return 'Snow.svg';
+  } else if (description.includes('sleet')) {
+    return 'Sleet.svg';
+  } else if (description.includes('hail')) {
+    return 'Hail.svg';
+  } else {
+    return 'Sunny.svg';
   }
 }
-
-// Then in your img tag's src attribute (around line 90):
-<img 
-  src={getWeatherIcon(weatherData.current?.weather_descriptions[0])}
-  alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
-  className='h-[100px] w-[100px]'
-/>
-
-
 
 useEffect(() =>{
   if(location){
@@ -107,7 +94,7 @@ useEffect(() =>{
           <div className='max-w-screen mx-auto'>
 
 
-          <div className='bg-gray-700 mb-5 p-10 rounded-4xl h-100  md:h-50 flex justify-center items-center space-x-3'>
+          <div className='bg-gray-700 mb-5 p-10 rounded-4xl h-100  md:h-50 flex justify-center items-center  flex-wrap space-x-3'>
               {isLoading? (<Spinner />)
               : error? (<p className='text-red-500 font-bold'>{error}</p>)
               :(
@@ -123,7 +110,7 @@ useEffect(() =>{
 
                 <div className=',mr-3 ml-auto'>
                  <img 
-                    src={()=> getWeatherIcon(weatherData.current?.weather_descriptions[0])}
+                    src={getWeatherIcon(weatherData.current?.weather_descriptions[0])}
                     alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
                     className='h-[100px] w-[100px]'
                   />
@@ -152,21 +139,35 @@ useEffect(() =>{
               }
             </div>
 
-             <div className='flex justify-items-start flex-wrap mb-5 ml-12 space-x-20 text-white text-left text-lg font-extrabold'>
-               <p className='hover:text-blue-600'>Today</p>
-               <p className='hover:text-blue-600'>Tomorrow</p>
-               <p className='hover:text-blue-600'>Next 3 Days</p>
+             <div className='flex justify-center items-center flex-wrap mb-5  space-x-20 text-white text-center text-lg font-extrabold'>
+               <p className='hover:text-gray-600 dark:hover:text-blue-600'>Today</p>
+               <p className='hover:text-gray-600 dark:hover:text-blue-600'>Tomorrow</p>
+               <p className='hover:text-gray-600 dark:hover:text-blue-600'>Next 3 Days</p>
             </div>
 
+            {isLoading? (<Spinner />)
+              : error? (<p className='text-red-500 font-bold'>{error}</p>)
+              :(
             <div className='flex justify-around flex-wrap'>
-              <WeatherCard weatherIcon='Cloudy-clear at times.svg' iconAltText='sun and cloud icon' />
-              <WeatherCard weatherIcon='Scattered-thunderstorm.svg' iconAltText='sun and cloud with wind icon' />
-              <WeatherCard weatherIcon='Rain-and-thunderstorm.svg' iconAltText='thundercloud with rain icon' />
-              <WeatherCard weatherIcon='Severe-thunderstorm.svg' iconAltText='thundercloud icon' />
+              <WeatherCard weatherIcon='Cloudy.svg' iconAltText='sun and cloud icon' data={weatherData.current?.cloudcover} label='cloudcover' />
+              {
+                weatherData.current?.is_day === 'yes' ?
+                <WeatherCard weatherIcon='Sunny.svg' iconAltText='sun icon' data='Day' label='Day or Night?' />
+                :
+                  <WeatherCard weatherIcon='Night.svg' iconAltText='moon icon' data='Night' label='Day or Night?' />
+              }
+              <WeatherCard weatherIcon='Sunny.svg' iconAltText='thundercloud with rain icon' data={weatherData.current?.uv_index} label='UV Index'/>
+              <WeatherCard weatherIcon='Severe-thunderstorm.svg' iconAltText='thundercloud icon' data={weatherData.current?.temperature} label='Temperature' />
             </div>
-          </div>
+              )
+            }
 
-              )}
+
+
+            
+          </div>
+          
+       )}
 
         </div>
   )
