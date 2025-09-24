@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import WeatherDetails from './components/WeatherDetails'
-import WeatherCard from './components/WeatherCard';
 import Search from './components/Search';
 import Spinner from './components/Spinner';
+import DailyWeather from './components/DailyWeather';
+import WeatherInDays from './components/WeatherInDays';
 
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -12,10 +13,11 @@ const BASE_URL= `http://api.weatherstack.com/current`
  
 function App() {
   const [weatherData, setWeatherData] = useState([]);
+  const [weatherTomorrowData, setWeatherTomorrowData] = useState([]);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
+  const [displayWeatherPerDate, setdisplayWeatherPerDate] = useState(0);
 
   const fetchWeatherData = async (locationQuery) => {
       try {
@@ -28,6 +30,36 @@ function App() {
       } else {
         const data = await response.json();
         setWeatherData(data);
+        setError('');
+      }
+
+    } catch (error) {
+      setError('An error occurred while fetching weather data');
+      console.log(error);
+
+    } finally {
+      setIsLoading(false);
+    }
+}
+
+useEffect(() =>{
+  if(location){
+    fetchWeatherData(location);
+  }
+},[location])
+
+/*
+const fetchTomorrowWeatherData = async (locationQuery) => {
+      try {
+          setIsLoading(true);
+          const response = await fetch(`${BASE_URL}?access_key=${API_KEY}&query=${locationQuery}&forecast_days=2`);
+ 
+      if (!response.ok) {
+        setError('Could not fetch weather data');
+        console.log(response.status, response.statusText);
+      } else {
+        const data = await response.json();
+        setWeatherTomorrowData(data);
         console.log(data);
         setError('');
       }
@@ -40,6 +72,13 @@ function App() {
       setIsLoading(false);
     }
 }
+
+useEffect(() =>{
+  if(location){
+    fetchTomorrowWeatherData(location);
+  }
+},[location])
+*/
 
 const getWeatherIcon = (description) => {
   if (!description) return 'Sunny.svg';
@@ -68,12 +107,6 @@ const getWeatherIcon = (description) => {
     return 'Sunny.svg';
   }
 }
-
-useEffect(() =>{
-  if(location){
-    fetchWeatherData(location);
-  }
-},[location])
 
 
   let currentDate = new Date().toLocaleDateString();
@@ -108,7 +141,7 @@ useEffect(() =>{
                   <h1>{weatherData.current?.temperature} °F</h1>
                 </div>
 
-                <div className=',mr-3 ml-auto'>
+                <div className='mr-3 ml-auto'>
                  <img 
                     src={getWeatherIcon(weatherData.current?.weather_descriptions[0])}
                     alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
@@ -139,26 +172,40 @@ useEffect(() =>{
               }
             </div>
 
-             <div className='flex justify-center items-center flex-wrap mb-5  space-x-20 text-white text-center text-lg font-extrabold'>
-               <p className='hover:text-gray-600 dark:hover:text-blue-600'>Today</p>
-               <p className='hover:text-gray-600 dark:hover:text-blue-600'>Tomorrow</p>
-               <p className='hover:text-gray-600 dark:hover:text-blue-600'>Next 3 Days</p>
+             <div className='flex  ml-10  flex-wrap mb-5  space-x-10 text-white text-center text-lg font-extrabold'>
+               <button className='hover:text-gray-600 dark:hover:text-blue-600' onClick={() => {
+                setdisplayWeatherPerDate(0);
+                }}
+                >
+                  Today</button>
+
+               <button className='hover:text-gray-600 dark:hover:text-blue-600' onClick={() => {
+                setdisplayWeatherPerDate(1);
+                 }}
+                 >
+                  Tomorrow</button>
+
+               <button className='hover:text-gray-600 dark:hover:text-blue-600 ' onClick={() => {
+                setdisplayWeatherPerDate(2);
+                }}
+                >
+                  Next 3 Days</button>
             </div>
 
-            {isLoading? (<Spinner />)
-              : error? (<p className='text-red-500 font-bold'>{error}</p>)
-              :(
-            <div className='flex justify-around flex-wrap'>
-              <WeatherCard weatherIcon='Cloudy.svg' iconAltText='sun and cloud icon' data={weatherData.current?.cloudcover} label='cloudcover' />
-              {
-                weatherData.current?.is_day === 'yes' ?
-                <WeatherCard weatherIcon='Sunny.svg' iconAltText='sun icon' data='Day' label='Day or Night?' />
-                :
-                  <WeatherCard weatherIcon='Night.svg' iconAltText='moon icon' data='Night' label='Day or Night?' />
-              }
-              <WeatherCard weatherIcon='Sunny.svg' iconAltText='thundercloud with rain icon' data={weatherData.current?.uv_index} label='UV Index'/>
-              <WeatherCard weatherIcon='Severe-thunderstorm.svg' iconAltText='thundercloud icon' data={weatherData.current?.temperature} label='Temperature' />
-            </div>
+           {isLoading ? (
+                <Spinner />
+              ) : error ? (
+                <p className='text-red-500 font-bold'>{error}</p>
+              ) : displayWeatherPerDate === 0 ? (
+                <DailyWeather weatherData={weatherData} />
+              ) : displayWeatherPerDate === 1 ?
+              (
+                <DailyWeather weatherData={weatherData} />
+              )
+              : (
+                <div className='bg-gray-700 p-10 rounded-4xl h-100 flex justify-center items-center space-x-3'>
+                  <WeatherInDays />
+                </div>
               )
             }
 
