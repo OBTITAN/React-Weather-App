@@ -8,12 +8,11 @@ import WeatherInDays from './components/WeatherInDays';
 
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-const BASE_URL= `http://api.weatherstack.com/current`
+const BASE_URL= `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/`
 
  
 function App() {
   const [weatherData, setWeatherData] = useState([]);
-  const [weatherTomorrowData, setWeatherTomorrowData] = useState([]);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -22,13 +21,14 @@ function App() {
   const fetchWeatherData = async (locationQuery) => {
       try {
           setIsLoading(true);
-          const response = await fetch(`${BASE_URL}?access_key=${API_KEY}&query=${locationQuery}`);
+          const response = await fetch(`${BASE_URL}${locationQuery}?key=${API_KEY}`);
  
       if (!response.ok) {
         setError('Could not fetch weather data');
         console.log(response.status, response.statusText);
       } else {
         const data = await response.json();
+        console.log(data);
         setWeatherData(data);
         setError('');
       }
@@ -47,38 +47,6 @@ useEffect(() =>{
     fetchWeatherData(location);
   }
 },[location])
-
-/*
-const fetchTomorrowWeatherData = async (locationQuery) => {
-      try {
-          setIsLoading(true);
-          const response = await fetch(`${BASE_URL}?access_key=${API_KEY}&query=${locationQuery}&forecast_days=2`);
- 
-      if (!response.ok) {
-        setError('Could not fetch weather data');
-        console.log(response.status, response.statusText);
-      } else {
-        const data = await response.json();
-        setWeatherTomorrowData(data);
-        console.log(data);
-        setError('');
-      }
-
-    } catch (error) {
-      setError('An error occurred while fetching weather data');
-      console.log(error);
-
-    } finally {
-      setIsLoading(false);
-    }
-}
-
-useEffect(() =>{
-  if(location){
-    fetchTomorrowWeatherData(location);
-  }
-},[location])
-*/
 
 const getWeatherIcon = (description) => {
   if (!description) return 'Sunny.svg';
@@ -134,17 +102,20 @@ const getWeatherIcon = (description) => {
                 <div className='flex justify-between items-center w-full'>
                   <div className='text-white text-left ml-1 mr-auto'>
                   <div className='font-extrabold text-3xl'>
-                    {weatherData.location?.name}, {weatherData.location?.country} 
+                    {weatherData.resolvedAddress}
+                  </div>
+                  <div className='font-extrabold text-3xl'>
+                    {weatherData.timezone}
                   </div>
                   <p>{currentDate}</p>
-                  <p className='font-bold'>{weatherData.current?.weather_descriptions[0]}</p>
-                  <h1>{weatherData.current?.temperature} °F</h1>
+                  <p className='font-bold'>{weatherData.currentConditions?.conditions}</p>
+                  <h1>{weatherData.currentConditions?.temp} °F</h1>
                 </div>
 
                 <div className='mr-3 ml-auto'>
                  <img 
-                    src={getWeatherIcon(weatherData.current?.weather_descriptions[0])}
-                    alt={weatherData.current?.weather_descriptions[0] || 'weather icon'}
+                    src={getWeatherIcon(weatherData.currentConditions?.conditions)}
+                    alt={weatherData.currentConditions?.conditions || 'weather icon'}
                     className='h-[100px] w-[100px]'
                   />
                 </div>
@@ -162,11 +133,11 @@ const getWeatherIcon = (description) => {
               : error? (<p className='text-red-500 font-bold'>{error}</p>)
               :(
                 <div className='md:flex md:justify-around md:items-center md:space-y-0 md:w-full  '>
-                    <WeatherDetails weatherMeasure = 'Wind' data = {weatherData.current?.wind_speed} imagePath = 'Wind.svg' altImageTxt = 'Wind Image'/>
+                    <WeatherDetails weatherMeasure = 'Wind' data = {weatherData.currentConditions?.windspeed} imagePath = 'Wind.svg' altImageTxt = 'Wind Image'/>
 
-                    <WeatherDetails weatherMeasure = 'Humidity' data = {weatherData.current?.humidity} imagePath = 'Drizzle.svg' altImageTxt = 'Humidity Image'/>
+                    <WeatherDetails weatherMeasure = 'Humidity' data = {weatherData.currentConditions?.humidity} imagePath = 'Drizzle.svg' altImageTxt = 'Humidity Image'/>
 
-                    <WeatherDetails weatherMeasure = 'Rain' data = {weatherData.current?.precip} imagePath = 'Rain.svg' altImageTxt = 'Precipitation Image'/>
+                    <WeatherDetails weatherMeasure = 'Rain' data = {weatherData.currentConditions?.precip} imagePath = 'Rain.svg' altImageTxt = 'Precipitation Image'/>
                 </div>
               )
               }

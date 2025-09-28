@@ -4,11 +4,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 const WeatherInDays = () => {
 
   const data = [
-  { name: 'Day 1', UV: 4000, temp: 2400, wind: 2400, humidity: 2000 },
-  { name: 'Day 2', UV: 3000, temp: 1398, wind: 2210, humidity: 2900 },
-  { name: 'Day 3', UV: 2000, temp: 7000, wind: 2290, humidity: 3000 },
-  { name: 'Day 4', UV: 2780, temp: 3908, wind: 2000, humidity: 1000 },
-  { name: 'Day 5', UV: 1890, temp: 4800, wind: 2181, humidity: 1500 },
+  { name: 'Monday', UV: 4000, temp: 2400, wind: 2400, humidity: 2000 },
+  { name: 'Tuesday', UV: 3000, temp: 1398, wind: 2210, humidity: 2900 },
+  { name: 'Wednesday', UV: 2000, temp: 7000, wind: 2290, humidity: 3000 },
+  { name: 'Thursday', UV: 2780, temp: 3908, wind: 2000, humidity: 1000 },
+  { name: 'Friday', UV: 1890, temp: 4800, wind: 2181, humidity: 1500 },
 ];
 
   return (
