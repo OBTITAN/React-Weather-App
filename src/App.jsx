@@ -21,7 +21,7 @@ function App() {
   const fetchWeatherData = async (locationQuery) => {
       try {
           setIsLoading(true);
-          const response = await fetch(`${BASE_URL}${locationQuery}?key=${API_KEY}`);
+          const response = await fetch(`${BASE_URL}${locationQuery}?key=${API_KEY}&unitGroup=us&include=current&include=days&elements=datetime,datetimeEpoch,temp,humidity,windspeed,precip,uvindex,cloudcover,conditions,sunsetEpoch,sunriseEpoch&contentType=json`);
  
       if (!response.ok) {
         setError('Could not fetch weather data');
@@ -104,7 +104,7 @@ const getWeatherIcon = (description) => {
                   <div className='font-extrabold text-3xl'>
                     {weatherData.resolvedAddress}
                   </div>
-                  <div className='font-extrabold text-3xl'>
+                  <div className='font-extrabold text-xl'>
                     {weatherData.timezone}
                   </div>
                   <p>{currentDate}</p>
@@ -160,7 +160,7 @@ const getWeatherIcon = (description) => {
                 setdisplayWeatherPerDate(2);
                 }}
                 >
-                  Next 3 Days</button>
+                  Next 6 Days</button>
             </div>
 
            {isLoading ? (
@@ -168,14 +168,14 @@ const getWeatherIcon = (description) => {
               ) : error ? (
                 <p className='text-red-500 font-bold'>{error}</p>
               ) : displayWeatherPerDate === 0 ? (
-                <DailyWeather weatherData={weatherData} />
+                <DailyWeather weatherData={weatherData.currentConditions} />
               ) : displayWeatherPerDate === 1 ?
               (
-                <DailyWeather weatherData={weatherData} />
+                <DailyWeather weatherData={weatherData.days?.[1]} />
               )
               : (
                 <div className='bg-gray-700 p-10 rounded-4xl h-100 flex justify-center items-center space-x-3'>
-                  <WeatherInDays />
+                  <WeatherInDays weatherData={weatherData.days}/>
                 </div>
               )
             }

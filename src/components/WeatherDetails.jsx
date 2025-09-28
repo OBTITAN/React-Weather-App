@@ -5,7 +5,7 @@ const WeatherDetails = ({weatherMeasure, data, imagePath, altImageTxt}) => {
     <div className= 'flex flex-col justify-center items-center mb-[50px] md:mb-0 text-white'>
         <img src= {imagePath} alt={altImageTxt} className='h-[70px] w-[70px] mb-3'/>
         <h1>
-          {data? data : 'N/A'}
+          {data? data : 0}
         </h1>
         <p className='font-extrabold text-2xl'>{weatherMeasure}</p>
     </div>
