@@ -11,7 +11,7 @@ const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 const BASE_URL= `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/`
 
  
-function App() {
+const App = () => {
   const [weatherData, setWeatherData] = useState([]);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
