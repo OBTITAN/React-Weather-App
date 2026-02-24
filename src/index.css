@@ -4,17 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
-  body {
-    @apply bg-gray-100;
-  }
 
   h1 {
     @apply text-4xl font-bold font-sans;
   }
 
   body {
-  @apply min-h-screen bg-gradient-to-b from-blue-300 to-blue-500 p-5 dark:from-gray-800 dark:to-gray-900
-}
+    @apply min-h-screen text-white;
+    font-family: 'Inter', sans-serif;
+  }
 }
 
 @theme inline {
@@ -226,6 +224,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -239,7 +238,7 @@
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
   }
- 
+
   .dark {
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
